@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Coloring {{ drawing.name }} — KidsPlay{% endblock %}
+
+{% block content %}
+<div class="color-page" data-slug="{{ slug }}">
+  <div class="color-topbar">
+    <a class="btn btn-back" href="{{ url_for('index') }}#gallery">← All Pictures</a>
+    <div class="color-heading">
+      <p class="eyebrow">{{ drawing.category_label }} coloring page</p>
+      <h1><span aria-hidden="true">{{ drawing.emoji }}</span> {{ drawing.name }}</h1>
+    </div>
+    <p class="hint"><span aria-hidden="true">👇</span> Pick a color, then tap a part of the picture!</p>
+  </div>
+
+  <div class="color-layout">
+    <aside class="palette-panel" aria-label="Color tools">
+      <h2><span aria-hidden="true">🎨</span> My Colors</h2>
+      <p class="palette-hint">Tap a color, then tap the picture.</p>
+
+      <div class="swatches" id="swatches">
+        {% for color in palette %}
+        <button
+          type="button"
+          class="swatch {% if loop.first %}selected{% endif %}"
+          data-color="{{ color.hex }}"
+          style="--swatch: {{ color.hex }}"
+          title="{{ color.name }}"
+          aria-label="{{ color.name }}"
+          aria-pressed="{% if loop.first %}true{% else %}false{% endif %}"
+        ></button>
+        {% endfor %}
+      </div>
+
+      <div class="selected-color">
+        <span class="selected-dot" id="selected-dot" style="background-color: {{ palette[0].hex }}"></span>
+        <span>Using: <strong id="selected-name">{{ palette[0].name }}</strong></span>
+      </div>
+
+      <button type="button" class="tool-btn eraser-btn" id="eraser" aria-pressed="false">
+        <span aria-hidden="true">🧽</span> Eraser
+      </button>
+
+      <h2 class="tools-heading"><span aria-hidden="true">🛠️</span> More Fun</h2>
+      <div class="tool-buttons">
+        <button type="button" class="tool-btn surprise-btn" id="surprise">
+          <span aria-hidden="true">✨</span> Surprise Me
+        </button>
+        <button type="button" class="tool-btn reset-btn" id="reset">
+          <span aria-hidden="true">↺</span> Start Over
+        </button>
+        <button type="button" class="tool-btn save-btn" id="download">
+          <span aria-hidden="true">💾</span> Save Picture
+        </button>
+      </div>
+    </aside>
+
+    <section class="canvas-panel" aria-label="Coloring canvas">
+      <div class="canvas-frame" id="canvas-frame">
+        {{ drawing.svg | safe }}
+      </div>
+      <p class="canvas-caption" id="canvas-caption">Tap any part of the picture to color it.</p>
+    </section>
+  </div>
+
+  <div class="more-pictures">
+    <h2><span aria-hidden="true">👉</span> More pictures</h2>
+    <div class="mini-grid">
+      {% for slug2, item in drawings.items() if slug2 != slug %}
+      <a class="mini-card" href="{{ url_for('color', slug=slug2) }}" title="{{ item.name }}">
+        <span class="mini-art">{{ item.svg | safe }}</span>
+        <span class="mini-name">{{ item.emoji }} {{ item.name }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

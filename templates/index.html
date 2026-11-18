@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}KidsPlay — Let's Color!{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-bubbles" aria-hidden="true">
+    <span class="bubble bubble-1">🌈</span>
+    <span class="bubble bubble-2">⭐</span>
+    <span class="bubble bubble-3">🦋</span>
+    <span class="bubble bubble-4">🎈</span>
+  </div>
+  <p class="eyebrow">Welcome, little artist!</p>
+  <h1>Let's <span class="rainbow-text">Color</span> Together!</h1>
+  <p class="hero-subtitle">
+    Pick your favorite animal, cartoon, or house and make it shine with colors.
+  </p>
+  <a class="btn btn-primary btn-large" href="#gallery">Start Coloring <span aria-hidden="true">↓</span></a>
+</section>
+
+<section class="how-to" id="how-to" aria-labelledby="how-to-title">
+  <h2 id="how-to-title">How to play</h2>
+  <div class="steps">
+    <div class="step">
+      <span class="step-number">1</span>
+      <span class="step-emoji" aria-hidden="true">🖍️</span>
+      <h3>Choose a color</h3>
+      <p>Tap any color in the box.</p>
+    </div>
+    <div class="step">
+      <span class="step-number">2</span>
+      <span class="step-emoji" aria-hidden="true">👆</span>
+      <h3>Tap a picture part</h3>
+      <p>Tap the part you want to paint.</p>
+    </div>
+    <div class="step">
+      <span class="step-number">3</span>
+      <span class="step-emoji" aria-hidden="true">🖼️</span>
+      <h3>Save your art</h3>
+      <p>Save it and show your family!</p>
+    </div>
+  </div>
+</section>
+
+<section class="gallery" id="gallery" aria-labelledby="gallery-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">{{ total }} pictures waiting for you</p>
+      <h2 id="gallery-title">Pick a picture!</h2>
+    </div>
+    <div class="filters" role="group" aria-label="Filter pictures">
+      {% for cat in categories %}
+      <button
+        type="button"
+        class="filter-btn {% if loop.first %}active{% endif %}"
+        data-filter="{{ cat.id }}"
+        aria-pressed="{% if loop.first %}true{% else %}false{% endif %}"
+      >
+        <span aria-hidden="true">{{ cat.emoji }}</span> {{ cat.label }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card-grid" id="card-grid">
+    {% for slug, item in drawings.items() %}
+    <a class="card" href="{{ url_for('color', slug=slug) }}" data-category="{{ item.category }}">
+      <div class="card-art">{{ item.svg | safe }}</div>
+      <div class="card-info">
+        <h3><span aria-hidden="true">{{ item.emoji }}</span> {{ item.name }}</h3>
+        <p>{{ item.description }}</p>
+        <span class="tag">{{ item.category_label }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <p class="empty-message" id="empty-message" hidden>No pictures here yet — try another group!</p>
+</section>
+{% endblock %}
